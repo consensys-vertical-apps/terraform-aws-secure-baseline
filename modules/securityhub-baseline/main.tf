@@ -25,7 +25,20 @@ resource "aws_securityhub_member" "members" {
   depends_on = [aws_securityhub_account.main]
   account_id = var.member_accounts[count.index].account_id
   email      = var.member_accounts[count.index].email
-  invite     = true
+  invite     = false
+
+  lifecycle {
+    ignore_changes = [
+      # AWS API says `email` is optional and is not used in organizations, so
+      # not returned by the ListMembers query.
+      # Terraform provider currently marks it as required which causes a diff.
+      # https://github.com/hashicorp/terraform-provider-aws/issues/21243#issuecomment-1333444846
+      email,
+      # `invite` is only to be true for non-organization members. But Terraform
+      # updates it based on `member_status`
+      invite,
+    ]
+  }
 }
 
 resource "aws_securityhub_invite_accepter" "invitee" {
