@@ -41,13 +41,14 @@ resource "aws_securityhub_member" "members" {
   }
 }
 
-resource "aws_securityhub_invite_accepter" "invitee" {
-  count = var.master_account_id != "" ? 1 : 0
+# commenting out accepter resource because in organization setup, there is nothing to accept
+# resource "aws_securityhub_invite_accepter" "invitee" {
+#   count = var.master_account_id != "" ? 1 : 0
 
-  master_id = var.master_account_id
+#   master_id = var.master_account_id
 
-  depends_on = [aws_securityhub_account.main]
-}
+#   depends_on = [aws_securityhub_account.main]
+# }
 
 # --------------------------------------------------------------------------------------------------
 # Subscribe standards
